@@ -1,0 +1,47 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="/static/style.css ">
+    {% block css_files %} {% endblock %}
+    <title>
+        {% block title %} {%endblock%} |DebateManage</title>
+</head>
+<body>
+    {% include 'partials/_navbar.html' %}
+ 
+    {% block content %}{% endblock %}
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    {% block js_files %} {% endblock %}
+</body>
+</html>
+
+
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'anasayfa' %}">DebateManager</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'blogs' %}">Blogs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'Admin' %}">Giriş Yap</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'Kayıt' %}">Kayıt Ol</a> <!-- Kayıt ol linki eklendi -->
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

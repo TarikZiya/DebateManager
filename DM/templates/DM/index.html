@@ -1,0 +1,38 @@
+{% extends "base.html" %} 
+{% load static %}
+
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'DM/css/style1.css' %}">
+{% endblock %}
+
+{% block title %} Homapage {%endblock%}
+
+{% block content %}
+
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-3">
+            {% include 'partials/_catagories.html' %}   
+        </div> 
+        <div class="col-9">
+            <h1><center>ANASAYFA</center></h1>
+            <hr>
+            
+            {% for blog in blogs %}
+                {% if blog.is_active and blog.is_home %}
+                    {% include 'partials/_DM.html' %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>   
+
+
+
+{% endblock %}
+
+{% block js_files %} 
+    <script src="{% static 'DM/js/script.js' %}"></script>
+{% endblock %}

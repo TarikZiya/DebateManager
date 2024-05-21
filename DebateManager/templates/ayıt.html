@@ -1,0 +1,63 @@
+<div class="card mb-3">
+    <div class="row">
+        <div class="col-md-3">
+            <img src="{% static 'img/Ceren1.jpg' %}" alt="" class="img-fluid">
+        </div>
+        <div class="col-md-9">
+            <div class="card body">
+                <h5 class="card-title"> Ceren İllhan</h5>
+                <p class="card-text">Münazırlar İçin Kombin Önerileri</p>
+            </div>
+        </div>
+    </div>    
+</div>
+<div class="card mb-3">
+    <div class="row">
+        <div class="col-md-3">
+            <img src="{% static 'img/Ceren2.jpg' %}" alt="" class="img-thumbnail">
+        </div>
+        <div class="col-md-9">
+            <div class="card body">
+                <h5 class="card-title"> Ceren İllhan</h5>
+                <p class="card-text">Münazara Yemek Tarifleri</p>
+            </div>
+        </div>
+    </div>    
+</div>
+<div class="card mb-3">
+    <div class="row">
+        <div class="col-md-3">
+            <img src="{% static 'img/Ceren3.jpg' %}" alt="" class="img-fluid">
+        </div>
+        <div class="col-md-9">
+            <div class="card body">
+                <h5 class="card-title"> Ceren İllhan</h5>
+                <p class="card-text">Münazara Dövüş Taktikleri </p>
+            </div>
+        </div>
+    </div>    
+</div>
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # Kullanıcı kayıt olduktan sonra giriş sayfasına yönlendirin
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('anasayfa')  # Başarılı giriş yapan kullanıcıyı ana sayfaya yönlendirir
+        else:
+            error_message = "Kullanıcı adı veya şifre hatalı."
+            return render(request, 'login.html', {'error_message': error_message})
+    else:
+        return render(request, 'login.html')
