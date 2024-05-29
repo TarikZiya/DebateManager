@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.shortcuts import redirect
-from .views import KayitOlView, YeniKullaniciView
+
 
 # http://127.0.0.1:8000/       = homapage
 # http://127.0.0.1:8000/index = homapage

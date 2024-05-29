@@ -13,50 +13,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.models import User
 from django.views.generic.base import TemplateView
 
-class YeniKullaniciView(TemplateView):
-    template_name = 'yeni_kullanici.html'
 
-class KayitOlView(CreateView):
-    model = User
-    template_name = 'kayit_ol.html'
-    fields = ['username', 'password', 'email']
-
-    success_url = reverse_lazy('yeni-kullanici')
-
-    def form_valid(self, form):
-        user = form.save(commit=False)
-        user.set_password(form.cleaned_data['password'])
-        user.save()
-        return super().form_valid(form)
-
-data = {
-    "blogs": [
-        {
-           "id": 1,
-           "title": "Eğitim Notları",
-           "image": "Ceren1.jpg",
-           "is_active": True,
-           "is_home": True,
-           "description": "Son Turnuva Güncel Konular",
-        },
-        {
-           "id": 2,
-           "title": "Münazırlar İçin Yemek Programı",
-           "image": "Ceren2.jpg",
-           "is_active": True,
-           "is_home": True,
-           "description": "Turunuva sırasındaki yemek listesi ",
-        },
-        {
-           "id": 3,
-           "title": "Münazara Dövüş Teknikleri",
-           "image": "Ceren3.jpg",
-           "is_active": True,
-           "is_home": True,
-           "description": "Kendinizi geliştirebilmeniz için yarışma sitilleri",
-        }
-    ]
-}
 
 # Create your views here.
 def index(request):
@@ -97,7 +54,7 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('Admin')  # Kullanıcı kayıt olduktan sonra giriş sayfasına yönlendirin
+            return redirect('Admin')  
     else:
         form = CustomUserCreationForm()
     return render(request, 'DM/Kayıt.html', {'form': form})
@@ -107,7 +64,7 @@ def register_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')  # Kullanıcı kayıt olduktan sonra giriş sayfasına yönlendirin
+            return redirect('login') 
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
@@ -119,7 +76,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('anasayfa')  # Başarılı giriş yapan kullanıcıyı ana sayfaya yönlendirir
+            return redirect('anasayfa') 
         else:
             error_message = "Kullanıcı adı veya şifre hatalı."
             return render(request, 'DM/login.html', {'error_message': error_message})
@@ -134,3 +91,5 @@ def blogs_by_category(request, slug):
         "blogs": blogs,
     }
     return render(request, "DM/blogs.html", context)
+
+
