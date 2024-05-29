@@ -5,7 +5,7 @@
 {% block content %}
 
 
-<h1> All Blogs</h1>
+<h1> Bütün İçerikler</h1>
 
 <div class="container mt-3">
     <div class="row">
@@ -14,10 +14,12 @@
         </div> 
         <div class="col-9">
             {% for blog in blogs %}
+                <section class="{{blog.title}}">
                 {% if blog.is_active %}
                     {% include 'partials/_DM.html' %}
                 {% endif %}   
             {% endfor %}
+        </section>
         </div>
     </div>
 </div>   

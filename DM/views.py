@@ -1,11 +1,33 @@
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from DM.models import Blog
+from DM.models import Blog, Category
+from django.contrib.auth import login, authenticate
+from .forms import CustomUserCreationForm
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView
+from django.contrib.auth.models import User
+from django.views.generic.base import TemplateView
 
+class YeniKullaniciView(TemplateView):
+    template_name = 'yeni_kullanici.html'
+
+class KayitOlView(CreateView):
+    model = User
+    template_name = 'kayit_ol.html'
+    fields = ['username', 'password', 'email']
+
+    success_url = reverse_lazy('yeni-kullanici')
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data['password'])
+        user.save()
+        return super().form_valid(form)
 
 data = {
     "blogs": [
@@ -39,13 +61,15 @@ data = {
 # Create your views here.
 def index(request):
     context = {
-        "blogs": Blog.objects.filter(is_active=True, is_home=True)
-    }
+        "blogs": Blog.objects.filter(is_home=True),
+        "categories": Category.objects.all()}
     return render(request, "DM/index.html", context)
 
 def blogs(request):
     context = {
-        "blogs": Blog.objects.all(is_active=True)
+        "blogs": Blog.objects.all(),
+        "blogs": Blog.objects.filter(is_home=False),
+        "categories": Category.objects.all()
     }
     return render(request, "DM/blogs.html", context)
 
@@ -58,33 +82,25 @@ def Kayıt(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Üyeliğiniz başarıyla oluşturuldu. Şimdi giriş yapabilirsiniz.')
-            return redirect('login')  # Kullanıcı kayıt olduktan sonra giriş sayfasına yönlendirin
+            return redirect('login')  
     else:
         form = UserCreationForm()
     return render(request, "DM/Kayıt.html", {'form': form})
 
-def blog_details(request, id):
-    #blogs = data["blogs"]
-    #selectedBlog = None
-
-    # id değerini integer'a dönüştür
-
-    #for blog in blogs:
-        #if blog["id"] == id:
-            #selectedBlog = blog
-            #break  # Eşleşen blog bulunduğunda döngüyü durdur
-    
-
-    blog = Blog.objects.get(id=id)
+def blog_details(request, slug):
+    blog = Blog.objects.get(slug=slug)
     return render(request, "DM/blog_details.html", {
-        "blog": blog
+        "blog": blog})
 
-
-    })
-
-
-
-    
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Admin')  # Kullanıcı kayıt olduktan sonra giriş sayfasına yönlendirin
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'DM/Kayıt.html', {'form': form})
 
 def register_view(request):
     if request.method == 'POST':
@@ -106,7 +122,15 @@ def login_view(request):
             return redirect('anasayfa')  # Başarılı giriş yapan kullanıcıyı ana sayfaya yönlendirir
         else:
             error_message = "Kullanıcı adı veya şifre hatalı."
-            return render(request, 'login.html', {'error_message': error_message})
+            return render(request, 'DM/login.html', {'error_message': error_message})
     else:
-        return render(request, 'login.html')
+        return render(request, 'DM/login.html')
     
+def blogs_by_category(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    blogs = Blog.objects.filter(is_active=True, categories__slug=slug)
+    context = {
+        "category": category,
+        "blogs": blogs,
+    }
+    return render(request, "DM/blogs.html", context)
